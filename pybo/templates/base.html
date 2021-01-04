@@ -12,6 +12,17 @@
 </head>
 <body>
 {% include "navbar.html" %}
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-sm-12 col-md-3 col-lg-2 p-2">
+            <!-- Sidebar  -->
+            <nav id="sidebar" class="border-top border-secondary">
+                <div class="list-group">
+                    <a class="rounded-0 list-group-item list-group-item-action list-group-item-light active" href="/pybo/question/list/qna/">자유게시판</a>
+                    <a class="rounded-0 list-group-item list-group-item-action list-group-item-light " href="/pybo/question/list/free/">질문과답변</a>
+                </div>
+            </nav>
+        </div>
 <!-- 기본 템플릿 안에 삽입될 내용 Start -->
 {% block content %}
 {% endblock %}
@@ -24,5 +35,7 @@
 {% block script %}
 {% endblock %}
 <!-- 자바스크립트 End -->
+    </div>
+</div>
 </body>
 </html>

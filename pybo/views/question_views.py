@@ -5,7 +5,7 @@ from flask import Blueprint, render_template, request, url_for, g, flash
 from werkzeug.utils import redirect
 
 from pybo import db
-from pybo.models import Question, Answer, User, question_voter
+from pybo.models import Question, Answer, User, Menu, question_voter
 from pybo.forms import QuestionForm, AnswerForm
 from pybo.views.auth_views import login_required
 
@@ -14,9 +14,10 @@ bp = Blueprint('question', __name__, url_prefix='/question')
 @bp.route('/list/')
 def _list():
     print('===============================Question List===============================')
+    menu = request.args.get('menu', type=int, default=1)
     page = request.args.get('page', type=int, default=1)
     kw = request.args.get('kw', type=str, default='')
-    so = request.args.get('so', type=str, default='recent ')
+    so = request.args.get('so', type=str, default='recent')
 
     # 추천 교차 테이블 내 게시글 별 카운트 처리.
     if so == 'recommend':
@@ -24,15 +25,18 @@ def _list():
             .group_by(question_voter.c.question_id).subquery()
         question_list = Question.query \
             .outerjoin(sub_query, Question.id == sub_query.c.question_id) \
-            .order_by(sub_query.c.num_voter.desc(), Question.create_date.desc())
+            .order_by(sub_query.c.num_voter.desc(), Question.create_date.desc()) \
+            .filter(Menu.id == menu)
     elif so == 'popular':
         sub_query = db.session.query(Answer.question_id, func.count('*').label('num_answer')) \
             .group_by(Answer.question_id).subquery()
         question_list = Question.query \
             .outerjoin(sub_query, Question.id == sub_query.c.question_id) \
-            .order_by(sub_query.c.num_answer.desc(), Question.create_date.desc())
+            .order_by(sub_query.c.num_answer.desc(), Question.create_date.desc()) \
+            .filter(Menu.id == menu)
     else:  # recent
-        question_list = Question.query.order_by(Question.create_date.desc())
+        question_list = Question.query.order_by(Question.create_date.desc()) \
+            .filter(Menu.id == menu)
 
     if kw:
         search = '%%{}%%'.format(kw)
@@ -51,13 +55,20 @@ def _list():
             .distinct()
     #페이징
     question_list = question_list.paginate(page, per_page=10)
-    return render_template('question/question_list.html', question_list=question_list, page=page, kw=kw, so=so)
+    return render_template('question/question_list.html', question_list=question_list, menu=menu, page=page, kw=kw, so=so)
 
 @bp.route('/detail/<int:question_id>/')
 def detail(question_id):
+    page = request.args.get('page', type=int, default=1)
+
     form = AnswerForm()
     question = Question.query.get_or_404(question_id)
-    return render_template('question/question_detail.html', question=question, form=form)
+    answer_list = Answer.query \
+        .filter_by(question=question) \
+        .order_by(Answer.create_date.desc())
+    answer_list = answer_list.paginate(page, per_page=5)
+
+    return render_template('question/question_detail.html', question=question, answer_list=answer_list, page=page, form=form)
 
 @bp.route('/create/', methods=('GET', 'POST'))
 @login_required
