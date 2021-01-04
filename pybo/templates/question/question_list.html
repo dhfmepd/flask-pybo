@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% block content %}
-
         <div class="col-sm-12 col-md-9 col-lg-10 p-2">
             <div id="content" class="border-top">
                 <div class="content_block">
@@ -97,7 +96,7 @@
                         {% endif %}
                     </ul>
                     <!-- 페이징처리 끝 -->
-                    <a href="{{ url_for('question.create') }}" class="btn btn-primary">질문 등록하기</a>
+                    <a href="{{ url_for('question.create', menu=menu) }}" class="btn btn-primary">질문 등록하기</a>
                     <form id="searchForm" method="get" action="{{ url_for('question._list') }}">
                         <input type="hidden" id="menu" name="menu" value="{{ menu }}">
                         <input type="hidden" id="page" name="page" value="{{ page }}">

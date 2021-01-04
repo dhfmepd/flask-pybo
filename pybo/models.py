@@ -23,7 +23,7 @@ class Question(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
     user = db.relationship('User', backref=db.backref('question_set')) #backref : User 모델 데이터를 통해 Question 모델 데이터를 참조
     voter = db.relationship('User', secondary=question_voter, backref=db.backref('question_voter_set'))
-    menu_id = db.Column(db.Integer, db.ForeignKey('menu.id', ondelete='CASCADE'), nullable=False, server_default='1')
+    menu = db.Column(db.Integer(), db.ForeignKey('menu.id', ondelete='CASCADE'), nullable=False, server_default='1')
 
 class Answer(db.Model):
     #기본키
@@ -60,5 +60,6 @@ class Comment(db.Model):
 class Menu(db.Model):
     #기본키
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
+    title = db.Column(db.String(50), nullable=False)
     remark = db.Column(db.Text(), nullable=False)
+    sort_no = db.Column(db.Integer, nullable=False)

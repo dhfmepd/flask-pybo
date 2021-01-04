@@ -30,6 +30,7 @@
             <label for="content">내용</label>
             <textarea class="form-control" name="content" id="content" rows="5">{{ form.content.data or '' }}</textarea>
         </div>
+        <input type="hidden" id="menu" name="menu" value="{{ menu }}">
         <button type="submit" class="btn btn-primary">저장하기</button>
     </form>
 </div>

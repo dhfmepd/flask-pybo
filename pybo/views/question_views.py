@@ -13,7 +13,6 @@ bp = Blueprint('question', __name__, url_prefix='/question')
 
 @bp.route('/list/')
 def _list():
-    print('===============================Question List===============================')
     menu = request.args.get('menu', type=int, default=1)
     page = request.args.get('page', type=int, default=1)
     kw = request.args.get('kw', type=str, default='')
@@ -26,17 +25,17 @@ def _list():
         question_list = Question.query \
             .outerjoin(sub_query, Question.id == sub_query.c.question_id) \
             .order_by(sub_query.c.num_voter.desc(), Question.create_date.desc()) \
-            .filter(Menu.id == menu)
+            .filter_by(menu=menu)
     elif so == 'popular':
         sub_query = db.session.query(Answer.question_id, func.count('*').label('num_answer')) \
             .group_by(Answer.question_id).subquery()
         question_list = Question.query \
             .outerjoin(sub_query, Question.id == sub_query.c.question_id) \
             .order_by(sub_query.c.num_answer.desc(), Question.create_date.desc()) \
-            .filter(Menu.id == menu)
+            .filter_by(menu=menu)
     else:  # recent
         question_list = Question.query.order_by(Question.create_date.desc()) \
-            .filter(Menu.id == menu)
+            .filter_by(menu=menu)
 
     if kw:
         search = '%%{}%%'.format(kw)
@@ -55,12 +54,14 @@ def _list():
             .distinct()
     #페이징
     question_list = question_list.paginate(page, per_page=10)
-    return render_template('question/question_list.html', question_list=question_list, menu=menu, page=page, kw=kw, so=so)
+    #메뉴
+    menu_list = Menu.query.order_by(Menu.sort_no.asc())
+
+    return render_template('question/question_list.html', question_list=question_list, menu_list=menu_list,  menu=menu, page=page, kw=kw, so=so)
 
 @bp.route('/detail/<int:question_id>/')
 def detail(question_id):
     page = request.args.get('page', type=int, default=1)
-
     form = AnswerForm()
     question = Question.query.get_or_404(question_id)
     answer_list = Answer.query \
@@ -73,16 +74,15 @@ def detail(question_id):
 @bp.route('/create/', methods=('GET', 'POST'))
 @login_required
 def create():
-    print('===============================Question Create===============================')
+    menu = request.args.get('menu', type=int, default=1)
     form = QuestionForm()
-
     if request.method == 'POST' and form.validate_on_submit():
-        question = Question(subject=form.subject.data, content=form.content.data, create_date=datetime.now(), user=g.user)
+        question = Question(subject=form.subject.data, content=form.content.data, create_date=datetime.now(), user=g.user, menu=menu)
         db.session.add(question)
         db.session.commit()
         return redirect(url_for('main.index'))
 
-    return render_template('question/question_form.html', form=form)
+    return render_template('question/question_form.html', form=form, menu=menu)
 
 @bp.route('/modify/<int:question_id>', methods=('GET', 'POST'))
 @login_required
