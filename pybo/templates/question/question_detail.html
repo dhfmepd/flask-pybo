@@ -11,7 +11,7 @@
         <div class="col-1"> <!-- 추천영역 -->
             <div class="bg-light text-center p-3 border font-weight-bolder mb-1">{{ question.voter|length }}</div>
             <a href="#" data-uri="{{ url_for('vote.question', question_id=question.id) }}"
-               class="recommend btn btn-sm btn-secondary btn-block my-1">추천</a>
+               class="recommend btn btn-sm btn-secondary btn-block my-1"><i class="bi bi-hand-thumbs-up-fill"></i> 추천</a>
         </div>
         <div class="col-11"> <!-- 질문영역 -->
             <div class="card">
@@ -61,7 +61,7 @@
                     {% endif %}
                     <div>
                         <a href="{{ url_for('comment.create_question', question_id=question.id) }}"
-                           class="small"><small>댓글 추가 ..</small></a>
+                           class="small"><i class="bi bi-chat-dots"></i><small> 댓글 추가 ..</small></a>
                     </div>
                     <!-- 질문 댓글 End -->
                 </div>
@@ -88,7 +88,7 @@
         <div class="col-1">  <!-- 추천영역 -->
             <div class="bg-light text-center p-3 border font-weight-bolder mb-1">{{ answer.voter|length }}</div>
             <a href="#" data-uri="{{ url_for('vote.answer', answer_id=answer.id) }}"
-                class="recommend btn btn-sm btn-secondary btn-block my-1">추천</a>
+                class="recommend btn btn-sm btn-secondary btn-block my-1"><i class="bi bi-hand-thumbs-up-fill"></i> 추천</a>
         </div>
         <div class="col-11">  <!-- 답변영역 -->
             <div class="card">
@@ -138,7 +138,7 @@
                     {% endif %}
                     <div>
                         <a href="{{ url_for('comment.create_answer', answer_id=answer.id) }}"
-                           class="small"><small>댓글 추가 ..</small></a>
+                           class="small"><i class="bi bi-chat-dots"></i><small> 댓글 추가 ..</small></a>
                     </div>
                     <!-- 답변 댓글 End -->
                 </div>

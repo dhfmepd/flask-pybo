@@ -24,6 +24,7 @@ class Question(db.Model):
     user = db.relationship('User', backref=db.backref('question_set')) #backref : User 모델 데이터를 통해 Question 모델 데이터를 참조
     voter = db.relationship('User', secondary=question_voter, backref=db.backref('question_voter_set'))
     menu = db.Column(db.Integer(), db.ForeignKey('menu.id', ondelete='CASCADE'), nullable=False, server_default='1')
+    view_cnt = db.Column(db.Integer, nullable=False, server_default='0')
 
 class Answer(db.Model):
     #기본키

@@ -8,14 +8,19 @@
         <ul class="navbar-nav">
             {% if g.user %}
                 <li class="nav-item ">
-                    <a class="nav-link" href="{{ url_for('auth.logout') }}">{{ g.user.username }}(로그아웃)</a>
+                    <a class="nav-link" href="{{ url_for('auth.logout') }}">
+                        <i class="bi bi-person-fill"></i> {{ g.user.username }}(로그아웃)</a>
                 </li>
             {% else %}
                 <li class="nav-item ">
-                    <a class="nav-link" href="{{ url_for('auth.signup') }}">계정생성</a>
+                    <a class="nav-link" href="{{ url_for('auth.signup') }}">
+                        <i class="bi bi-person-plus-fill"></i> 계정생성
+                    </a>
                 </li>
                 <li class="nav-item ">
-                    <a class="nav-link" href="{{ url_for('auth.login') }}">로그인</a>
+                    <a class="nav-link" href="{{ url_for('auth.login') }}">
+                        <i class="bi bi-box-arrow-in-right"></i> 로그인
+                    </a>
                 </li>
             {% endif %}
         </ul>

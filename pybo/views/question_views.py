@@ -23,19 +23,20 @@ def _list():
         sub_query = db.session.query(question_voter.c.question_id, func.count('*').label('num_voter')) \
             .group_by(question_voter.c.question_id).subquery()
         question_list = Question.query \
+            .filter_by(menu=menu) \
             .outerjoin(sub_query, Question.id == sub_query.c.question_id) \
-            .order_by(sub_query.c.num_voter.desc(), Question.create_date.desc()) \
-            .filter_by(menu=menu)
+            .order_by(sub_query.c.num_voter.desc(), Question.create_date.desc())
     elif so == 'popular':
         sub_query = db.session.query(Answer.question_id, func.count('*').label('num_answer')) \
             .group_by(Answer.question_id).subquery()
         question_list = Question.query \
+            .filter_by(menu=menu) \
             .outerjoin(sub_query, Question.id == sub_query.c.question_id) \
-            .order_by(sub_query.c.num_answer.desc(), Question.create_date.desc()) \
-            .filter_by(menu=menu)
+            .order_by(sub_query.c.num_answer.desc(), Question.create_date.desc())
     else:  # recent
-        question_list = Question.query.order_by(Question.create_date.desc()) \
-            .filter_by(menu=menu)
+        question_list = Question.query \
+            .filter_by(menu=menu) \
+            .order_by(Question.create_date.desc())
 
     if kw:
         search = '%%{}%%'.format(kw)
@@ -52,6 +53,7 @@ def _list():
                     sub_query.c.username.ilike(search)  # 답변작성자
                     ) \
             .distinct()
+    print("QUERY[_list] :: ", question_list)
     #페이징
     question_list = question_list.paginate(page, per_page=10)
     #메뉴
@@ -63,7 +65,15 @@ def _list():
 def detail(question_id):
     page = request.args.get('page', type=int, default=1)
     form = AnswerForm()
+    
+    # 질문 조회
     question = Question.query.get_or_404(question_id)
+
+    # 조회 수 증가
+    question.view_cnt = question.view_cnt + 1
+    db.session.commit()
+    
+    # 답변 조회
     answer_list = Answer.query \
         .filter_by(question=question) \
         .order_by(Answer.create_date.desc())
