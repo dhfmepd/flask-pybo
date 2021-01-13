@@ -20,7 +20,12 @@ def create_question(question_id):
         db.session.add(comment)
         db.session.commit()
         return redirect(url_for('question.detail', question_id=question_id))
-    return render_template('comment/comment_form.html', form=form)
+
+    # 메뉴 리스트
+    menu_list = Menu.query.order_by(Menu.sort_no.asc())
+    # 메뉴(선택)
+    menu = Menu.query.get_or_404(question.menu_id)
+    return render_template('comment/comment_form.html', form=form, menu_list=menu_list, menu=menu)
 
 @bp.route('modify/question/<int:comment_id>', methods=('GET', 'POST'))
 @login_required
@@ -67,7 +72,11 @@ def create_answer(answer_id):
         db.session.add(comment)
         db.session.commit()
         return redirect(url_for('question.detail', question_id=answer.question.id))
-    return render_template('comment/comment_form.html', form=form)
+    # 메뉴 리스트
+    menu_list = Menu.query.order_by(Menu.sort_no.asc())
+    # 메뉴(선택)
+    menu = Menu.query.get_or_404(answer.question.menu_id)
+    return render_template('comment/comment_form.html', form=form, menu_list=menu_list, menu=menu)
 
 
 @bp.route('/modify/answer/<int:comment_id>', methods=('GET', 'POST'))

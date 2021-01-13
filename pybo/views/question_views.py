@@ -5,7 +5,7 @@ from flask import Blueprint, render_template, request, url_for, g, flash
 from werkzeug.utils import redirect
 
 from pybo import db
-from pybo.models import Question, Answer, User, Menu, question_voter
+from pybo.models import Question, Answer, User, Menu, question_voter, answer_voter
 from pybo.forms import QuestionForm, AnswerForm
 from pybo.views.auth_views import login_required
 
@@ -66,6 +66,7 @@ def _list():
 @bp.route('/detail/<int:question_id>/')
 def detail(question_id):
     page = request.args.get('page', type=int, default=1)
+    so = request.args.get('so', type=str, default='recent')
     form = AnswerForm()
     
     # 질문 조회
@@ -74,18 +75,27 @@ def detail(question_id):
     # 조회 수 증가
     question.view_cnt = question.view_cnt + 1
     db.session.commit()
-    
+
     # 답변 조회
-    answer_list = Answer.query \
-        .filter_by(question=question) \
-        .order_by(Answer.create_date.desc())
+    if so == 'recommend':
+        sub_query = db.session.query(answer_voter.c.answer_id, func.count('*').label('num_voter')) \
+            .group_by(answer_voter.c.answer_id).subquery()
+        answer_list = Answer.query \
+            .filter_by(question=question) \
+            .outerjoin(sub_query, Answer.id == sub_query.c.answer_id) \
+            .order_by(sub_query.c.num_voter.desc(), Answer.create_date.desc())
+    else:  # recent
+        answer_list = Answer.query \
+            .filter_by(question=question) \
+            .order_by(Answer.create_date.desc())
+
     answer_list = answer_list.paginate(page, per_page=5)
     # 메뉴 리스트
     menu_list = Menu.query.order_by(Menu.sort_no.asc())
     # 메뉴(선택)
     menu = Menu.query.get_or_404(question.menu_id)
 
-    return render_template('question/question_detail.html', question=question, answer_list=answer_list, menu_list=menu_list, menu=menu, page=page, form=form)
+    return render_template('question/question_detail.html', question=question, answer_list=answer_list, menu_list=menu_list, menu=menu, page=page, form=form, so=so)
 
 @bp.route('/create/', methods=('GET', 'POST'))
 @login_required

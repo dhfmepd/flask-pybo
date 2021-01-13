@@ -78,9 +78,13 @@
                 <small class="ml-5">{{ answer_list.page }} / {{ answer_list.pages }} Page</small>
             </h5>
 
-            <div class="btn-group " role="group">
-                <button type="button" title="추천순" class="so-link btn btn-sm btn-secondary so active" data-so="recommend" ><i class="fas fa-thumbs-up"></i></button>
-                <button type="button" title="시간순" class="so-link btn btn-sm btn-secondary so " data-so="recent" ><i class="fas fa-list"></i></button>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-sm btn-secondary so {% if so=='recent' %}active{% endif %}" data-so="recent"  data-original-title="최신순">
+                    <i class="bi bi-list-ul"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-secondary so {% if so=='recommend' %}active{% endif %}" data-so="recommend" data-original-title="추천순">
+                    <i class="bi bi-hand-thumbs-up-fill"></i>
+                </button>
             </div>
         </div>
         {% for answer in answer_list.items %}
@@ -204,6 +208,7 @@
         </form>
         <form id="searchForm" method="get" action="{{ url_for('question.detail', question_id=question.id) }}">
             <input type="hidden" id="page" name="page" value="{{ page }}">
+            <input type="hidden" id="so" name="so" value="{{ so }}">
         </form>
     </div>
 </div>
@@ -223,6 +228,11 @@ $(document).ready(function(){
     });
     $(".page-link").on('click', function() {
         $("#page").val($(this).data("page"));
+        $("#searchForm").submit();
+    });
+    $(".so").on('click', function() {
+        $("#so").val($(this).data("so"));
+        $("#page").val(1);
         $("#searchForm").submit();
     });
 });
