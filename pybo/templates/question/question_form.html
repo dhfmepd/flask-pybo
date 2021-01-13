@@ -1,37 +1,39 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container">
-    <h5 class="my-3 border-bottom pb-2">질문등록</h5>
-    <!-- hidden_tag() 처리 하지 않은 경우, form.validate_on_submit() 처리 시 항상 False 리턴
-    <form method="post" class="post-form my-3">
-        {{ form.csrf_token }}
-        {{ form.subject.label }}<br>
-        {{ form.subject() }}<br>
+<div class="col-sm-12 col-md-9 col-lg-10 p-2">
+    <div class="container">
+        <h5 class="my-3 border-bottom pb-2">질문등록</h5>
+        <!-- hidden_tag() 처리 하지 않은 경우, form.validate_on_submit() 처리 시 항상 False 리턴
+        <form method="post" class="post-form my-3">
+            {{ form.csrf_token }}
+            {{ form.subject.label }}<br>
+            {{ form.subject() }}<br>
 
-        {{ form.content.label }}<br>
-        {{ form.content() }}<br>
+            {{ form.content.label }}<br>
+            {{ form.content() }}<br>
 
-        <button type="submit" class="btn btn-primary">저장하기</button>
-    </form>
-    -->
-    <form method="post" class="post-form my-3">
-        {{ form.csrf_token }}
-        {% for field, errors in form.errors.items() %}
-        <div class="alert alert-danger" role="alert">
-            <strong>{{ form[field].label }}</strong>: {{ ', '.join(errors) }}
-        </div>
-        {% endfor %}
-        <div class="form-group">
-            <label for="subject">제목</label>
-            <input type="text" class="form-control" name="subject" id="subject"
-                value="{{ form.subject.data or '' }}">
-        </div>
-        <div class="form-group">
-            <label for="content">내용</label>
-            <textarea class="form-control" name="content" id="content" rows="5">{{ form.content.data or '' }}</textarea>
-        </div>
-        <input type="hidden" id="menu" name="menu" value="{{ menu }}">
-        <button type="submit" class="btn btn-primary">저장하기</button>
-    </form>
+            <button type="submit" class="btn btn-primary">저장하기</button>
+        </form>
+        -->
+        <form method="post" class="post-form my-3">
+            {{ form.csrf_token }}
+            {% for field, errors in form.errors.items() %}
+            <div class="alert alert-danger" role="alert">
+                <strong>{{ form[field].label }}</strong>: {{ ', '.join(errors) }}
+            </div>
+            {% endfor %}
+            <div class="form-group">
+                <label for="subject">제목</label>
+                <input type="text" class="form-control" name="subject" id="subject"
+                    value="{{ form.subject.data or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="content">내용</label>
+                <textarea class="form-control" name="content" id="content" rows="5">{{ form.content.data or '' }}</textarea>
+            </div>
+            <input type="hidden" id="menu_id" name="menu_id" value="{{ menu.id }}">
+            <button type="submit" class="btn btn-primary">저장하기</button>
+        </form>
+    </div>
 </div>
 {% endblock %}

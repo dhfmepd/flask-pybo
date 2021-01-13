@@ -13,7 +13,6 @@
 </head>
 <body>
 {% include "navbar.html" %}
-<i class="bi bi-arrow-down-right-circle"></i>
 <div class="container mt-3">
     <div class="row">
         <div class="col-sm-12 col-md-3 col-lg-2 p-2">
@@ -22,10 +21,10 @@
                 <div class="list-group">
                     {% if menu_list %}
                         {% for menu_item in menu_list %}
-                            {% if menu_item.id == menu %}
-                            <a class="rounded-0 list-group-item list-group-item-action list-group-item-light active" data-uri="{{ url_for('question._list', menu=menu_item.id) }}" href="#">{{ menu_item.title }}</a>
+                            {% if menu_item.id == menu.id %}
+                            <a class="rounded-0 list-group-item list-group-item-action list-group-item-light active" data-uri="{{ url_for('question._list', menu_id=menu_item.id) }}" href="#">{{ menu_item.title }}</a>
                             {% else %}
-                            <a class="rounded-0 list-group-item list-group-item-action list-group-item-light" data-uri="{{ url_for('question._list', menu=menu_item.id) }}" href="#">{{ menu_item.title }}</a>
+                            <a class="rounded-0 list-group-item list-group-item-action list-group-item-light" data-uri="{{ url_for('question._list', menu_id=menu_item.id) }}" href="#">{{ menu_item.title }}</a>
                             {% endif %}
                         {% endfor %}
                     {% endif %}

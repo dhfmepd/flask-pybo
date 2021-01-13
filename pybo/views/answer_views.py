@@ -5,7 +5,7 @@ from werkzeug.utils import redirect
 
 from pybo import db
 from pybo.forms import AnswerForm
-from pybo.models import Question, Answer
+from pybo.models import Question, Answer, Menu
 from pybo.views.auth_views import login_required
 
 bp = Blueprint('answer', __name__, url_prefix='/answer')
@@ -28,6 +28,7 @@ def create(question_id):
 @bp.route('/modify/<int:answer_id>', methods=('GET', 'POST'))
 @login_required
 def modify(answer_id):
+    menu_id = request.args.get('menu_id', type=int, default=1)
     answer = Answer.query.get_or_404(answer_id)
     if g.user != answer.user:
         flash('수정권한이 없습니다')
@@ -43,7 +44,12 @@ def modify(answer_id):
 
     else:
         form = AnswerForm(obj=answer)
-    return render_template('answer/answer_form.html', answer=answer, form=form)
+
+    # 메뉴 리스트
+    menu_list = Menu.query.order_by(Menu.sort_no.asc())
+    # 메뉴(선택)
+    menu = Menu.query.get_or_404(menu_id)
+    return render_template('answer/answer_form.html', answer=answer, form=form, menu_list=menu_list, menu=menu)
 
 @bp.route('/delete/<int:answer_id>')
 @login_required
