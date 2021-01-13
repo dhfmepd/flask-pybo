@@ -15,6 +15,16 @@
                    value="{{ form.password.data or '' }}">
         </div>
         <button type="submit" class="btn btn-primary">로그인</button>
+        <hr>
+        <div class="text-muted my-3">
+            <small>구글 또는 페이스북 계정으로 로그인</small>
+        </div>
+        <a href="/accounts/google/login/?method=oauth2">
+            <img src="/static/img/google.png" title="구글 로그인">
+        </a>
+        <a href="/accounts/facebook/login/" class="ml-1">
+            <img src="/static/img/facebook.png" title="페이스북 로그인">
+        </a>
     </form>
 </div>
 {% endblock %}
