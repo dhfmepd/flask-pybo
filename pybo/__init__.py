@@ -3,6 +3,7 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 from flaskext.markdown import Markdown
+from flask_simplemde import SimpleMDE
 
 import config
 
@@ -47,5 +48,10 @@ def create_app():
 
     #Markdown
     Markdown(app, extensions=['nl2br', 'fenced_code'])
+
+    #SimpleMDE
+    app.config['SIMPLEMDE_JS_IIFE'] = True
+    app.config['SIMPLEMDE_USE_CDN'] = True
+    SimpleMDE(app)
 
     return app

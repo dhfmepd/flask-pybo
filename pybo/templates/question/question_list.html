@@ -55,8 +55,8 @@
                         <span class="text-danger small ml-2">{{ question.answer_set|length }}</span>
                         {% endif %}
                     </td>
-                    <td>{{ question.view_cnt }}</td>
                     <td>{{ question.user.username }}</td>
+                    <td>{{ question.view_cnt }}</td>
                     <td>{{ question.create_date|datetime }}</td>
                 </tr>
                 {% endfor %}
