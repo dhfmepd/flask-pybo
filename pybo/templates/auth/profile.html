@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container my-3">
+    <ul class="nav nav-tabs">
+        <li class="nav_item">
+            <a class="nav-link active" href="/common/settings/base/">기본정보</a>
+        </li>
+        <li class="nav_item">
+            <a class="nav-link" href="/common/settings/image/">게시</a>
+        </li>
+    </ul>
+    <div class="profile_base">
+        <div class="profile_title">사용자명</div>
+        <p class="mb-4">{{ user.username }}</p>
+        <div class="profile_title">한줄소개</div>
+        <p class="mb-4">{{ user.intro }}</p>
+    </div>
+</div>
+{% endblock %}

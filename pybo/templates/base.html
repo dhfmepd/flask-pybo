@@ -17,11 +17,11 @@
 {% include "navbar.html" %}
 <div class="container mt-3">
     <div class="row">
-        <div class="col-sm-12 col-md-3 col-lg-2 p-2">
-            <!-- Sidebar  -->
-            <nav id="sidebar" class="border-top">
-                <div class="list-group">
-                    {% if menu_list %}
+        {% if menu_list %}
+            <div class="col-sm-12 col-md-3 col-lg-2 p-2">
+                <!-- Sidebar  -->
+                <nav id="sidebar" class="border-top">
+                    <div class="list-group">
                         {% for menu_item in menu_list %}
                             {% if menu_item.id == menu.id %}
                             <a class="rounded-0 list-group-item list-group-item-action list-group-item-light active" data-uri="{{ url_for('question._list', menu_id=menu_item.id) }}" href="#">{{ menu_item.title }}</a>
@@ -29,10 +29,10 @@
                             <a class="rounded-0 list-group-item list-group-item-action list-group-item-light" data-uri="{{ url_for('question._list', menu_id=menu_item.id) }}" href="#">{{ menu_item.title }}</a>
                             {% endif %}
                         {% endfor %}
-                    {% endif %}
-                </div>
-            </nav>
-        </div>
+                    </div>
+                </nav>
+            </div>
+        {% endif %}
 <!-- 기본 템플릿 안에 삽입될 내용 Start -->
 {% block content %}
 {% endblock %}

@@ -1,10 +1,11 @@
+from datetime import datetime
 from flask import Blueprint, url_for, render_template, flash, request, session, g
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import redirect
 
 import functools
 from pybo import db
-from pybo.forms import UserCreateForm, UserLoginForm
+from pybo.forms import UserCreateForm, UserLoginForm, UserSettingsForm, UserProfileForm
 from pybo.models import User
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -17,7 +18,8 @@ def signup():
         if not user:
             user = User(username=form.username.data,
                         password=generate_password_hash(form.password1.data),#generate_password_hash : 복호화 불가, 비교 시 암호화 후 처리.
-                        email=form.email.data)
+                        email=form.email.data,
+                        create_date=datetime.now())
             db.session.add(user)
             db.session.commit()
             return redirect(url_for('main.index'))#url_for : 라우트가 설정된 함수명으로 URL을 역으로 찾아준다.
@@ -47,6 +49,26 @@ def login():
 def logout():
     session.clear()
     return redirect(url_for('main.index'))
+
+@bp.route('/settings/', methods=('GET', 'POST'))
+def settings():
+    user = User.query.get_or_404(g.user.id)
+    if request.method == 'POST':
+        form = UserSettingsForm()
+        if form.validate_on_submit():
+            form.populate_obj(user)
+            user.modify_date = datetime.now()  # 수정일시 저장
+            db.session.commit()
+            return redirect(url_for('main.index'))
+    else:
+        form = UserSettingsForm(obj=user)
+
+    return render_template('auth/settings.html', form=form)
+
+@bp.route('/profile/')
+def profile():
+    user = User.query.get_or_404(g.user.id)
+    return render_template('auth/profile.html', user=user)
 
 @bp.before_app_request #before_app_request : 라우트함수보타 먼저 실행
 def load_logged_in_user():

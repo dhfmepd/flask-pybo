@@ -22,3 +22,11 @@ class UserLoginForm(FlaskForm):
 
 class CommentForm(FlaskForm):
     content = TextAreaField('내용', validators=[DataRequired()])
+
+class UserSettingsForm(FlaskForm):
+    username = StringField('사용자이름', validators=[DataRequired(), Length(min=3, max=25)])
+    email = EmailField('이메일', [DataRequired(), Email()])
+    intro = TextAreaField('한줄소개')
+
+class UserProfileForm(FlaskForm):
+    intro = TextAreaField('한줄소개')

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container my-3">
+    <ul class="nav nav-tabs">
+        <li class="nav_item">
+            <a class="nav-link active" href="/common/settings/base/">기본정보</a>
+        </li>
+        <li class="nav_item">
+            <a class="nav-link" href="/common/settings/image/">프로필 이미지</a>
+        </li>
+    </ul>
+    <form method="post" class="post-form">
+        {{ form.csrf_token }}
+        {% include "form_errors.html" %}
+        <div class="form-group mt-2">
+            <label for="username">사용자명(ID)</label>
+            <input type="text" class="form-control" name="username" id="username"
+                   value="{{ form.username.data or '' }}">
+        </div>
+        <div class="form-group">
+            <label for="email">이메일</label>
+            <input type="text" class="form-control" name="email" id="email" readonly
+                   value="{{ form.email.data or '' }}">
+        </div>
+        <div class="form-group">
+            <label for="email">한줄소개</label>
+            <input type="text" class="form-control" name="intro" id="intro"
+                   value="{{ form.intro.data or '' }}">
+            <small id="introHelp" class="form-text text-muted">한줄로 자신에 대하여 얘기해 주세요.</small>
+        </div>
+
+        <button type="submit" class="btn btn-sm btn-primary">저장하기</button>
+    </form>
+</div>
+{% endblock %}
