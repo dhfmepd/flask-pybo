@@ -1,11 +1,12 @@
+import os
 from datetime import datetime
-from flask import Blueprint, url_for, render_template, flash, request, session, g
+from flask import current_app, Blueprint, url_for, render_template, flash, request, session, g
 from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.utils import redirect
+from werkzeug.utils import redirect, secure_filename
 
 import functools
 from pybo import db
-from pybo.forms import UserCreateForm, UserLoginForm, UserSettingsForm, UserProfileForm
+from pybo.forms import UserCreateForm, UserLoginForm, UserSettingsBaseForm, UserSettingsImageForm, UserProfileForm
 from pybo.models import User
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -52,18 +53,30 @@ def logout():
 
 @bp.route('/settings/', methods=('GET', 'POST'))
 def settings():
+    ni = request.args.get('ni', type=str, default='base')
     user = User.query.get_or_404(g.user.id)
-    if request.method == 'POST':
-        form = UserSettingsForm()
-        if form.validate_on_submit():
-            form.populate_obj(user)
-            user.modify_date = datetime.now()  # 수정일시 저장
-            db.session.commit()
-            return redirect(url_for('main.index'))
-    else:
-        form = UserSettingsForm(obj=user)
 
-    return render_template('auth/settings.html', form=form)
+    if ni == 'base':
+        if request.method == 'POST':
+            form = UserSettingsBaseForm()
+            if form.validate_on_submit():
+                form.populate_obj(user)
+                user.modify_date = datetime.now()  # 수정일시 저장
+                db.session.commit()
+                return redirect(url_for('main.index'))
+        else:
+            form = UserSettingsBaseForm(obj=user)
+        return render_template('auth/settings_base.html', form=form, ni=ni)
+    elif ni == 'image':
+        if request.method == 'POST':
+            file = request.files['profile_image']
+            file_name = secure_filename(file.filename)
+            file_path = os.path.join(current_app.config['UPLOAD_DIR'], file_name)
+            file.save(file_path)
+            return redirect(url_for('main.index'))
+        return render_template('auth/settings_image.html', ni=ni)
+
+    return render_template('auth/settings_base.html', form=form, ni=ni)
 
 @bp.route('/profile/')
 def profile():

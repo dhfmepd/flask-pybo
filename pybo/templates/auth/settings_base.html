@@ -1,14 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container my-3">
-    <ul class="nav nav-tabs">
-        <li class="nav_item">
-            <a class="nav-link active" href="/common/settings/base/">기본정보</a>
-        </li>
-        <li class="nav_item">
-            <a class="nav-link" href="/common/settings/image/">프로필 이미지</a>
-        </li>
-    </ul>
+    {% include 'auth/navtab.html' %}
     <form method="post" class="post-form">
         {{ form.csrf_token }}
         {% include "form_errors.html" %}

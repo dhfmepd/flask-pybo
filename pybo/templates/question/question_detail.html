@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+{% include 'category.html' %}
 <div class="col-sm-12 col-md-9 col-lg-10 p-2">
     <div class="container my-3">
         {% for message in get_flashed_messages() %}

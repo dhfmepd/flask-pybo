@@ -1,0 +1,16 @@
+{% if menu_list %}
+    <div class="col-sm-12 col-md-3 col-lg-2 p-2">
+        <!-- Sidebar  -->
+        <nav id="sidebar" class="border-top">
+            <div class="list-group">
+                {% for menu_item in menu_list %}
+                    {% if menu_item.id == menu.id %}
+                    <a class="rounded-0 list-group-item list-group-item-action list-group-item-light active" href="{{ url_for('question._list', menu_id=menu_item.id) }}">{{ menu_item.title }}</a>
+                    {% else %}
+                    <a class="rounded-0 list-group-item list-group-item-action list-group-item-light" href="{{ url_for('question._list', menu_id=menu_item.id) }}">{{ menu_item.title }}</a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </nav>
+    </div>
+{% endif %}

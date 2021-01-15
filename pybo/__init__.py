@@ -53,5 +53,8 @@ def create_app():
     app.config['SIMPLEMDE_JS_IIFE'] = True
     app.config['SIMPLEMDE_USE_CDN'] = True
     SimpleMDE(app)
+    
+    #파일업로드 경로
+    app.config['UPLOAD_DIR'] = "C:/projects/myproject/pybo/static/profile/upload/"
 
     return app

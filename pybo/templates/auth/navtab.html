@@ -1,0 +1,8 @@
+<ul class="nav nav-tabs">
+    <li class="nav_item">
+        <a class="nav-link {% if ni=='base' %}active{% endif %}" href="{{ url_for('auth.settings', ni='base') }}">기본정보</a>
+    </li>
+    <li class="nav_item">
+        <a class="nav-link {% if ni=='image' %}active{% endif %}" href="{{ url_for('auth.settings', ni='image') }}">프로필 이미지</a>
+    </li>
+</ul>

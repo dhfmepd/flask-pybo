@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container my-3">
+    {% include 'auth/navtab.html' %}
+    <form method="post" class="post-form py-3" enctype="multipart/form-data">
+        <label>프로필 이미지 선택</label>
+        <div class="input-group">
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="profile_image" name="profile_image">
+                <label class="custom-file-label" for="profile_image">Choose file...</label>
+            </div>
+        </div>
+        <div class="small text-muted my-3">※ 네모박스를 조절하여 프로필 이미지를 변경하세요.</div>
+        <button type="submit" class="btn btn-sm btn-primary">저장하기</button>
+    </form>
+</div>
+{% endblock %}
+{% block script %}
+<script type='text/javascript'>
+$(document).ready(function () {
+    document.querySelector('.custom-file-input').addEventListener('change',function(e){
+        var fileName = document.getElementById("profile_image").files[0].name;
+        var nextSibling = e.target.nextElementSibling
+        nextSibling.innerText = fileName
+    });
+});
+</script>
+{% endblock %}
