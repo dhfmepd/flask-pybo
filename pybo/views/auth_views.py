@@ -51,6 +51,10 @@ def logout():
     session.clear()
     return redirect(url_for('main.index'))
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS']
+
 @bp.route('/settings/', methods=('GET', 'POST'))
 def settings():
     ni = request.args.get('ni', type=str, default='base')
@@ -70,10 +74,13 @@ def settings():
     elif ni == 'image':
         if request.method == 'POST':
             file = request.files['profile_image']
-            file_name = secure_filename(file.filename)
-            file_path = os.path.join(current_app.config['UPLOAD_DIR'], file_name)
-            file.save(file_path)
-            return redirect(url_for('main.index'))
+            if file and allowed_file(file.filename):
+                file_name = secure_filename(file.filename)
+                file_path = os.path.join(current_app.config['UPLOAD_DIR'], file_name)
+                file.save(file_path)
+                user.image_path = file_path
+                db.session.commit()
+                return redirect(url_for('main.index'))
         return render_template('auth/settings_image.html', ni=ni)
 
     return render_template('auth/settings_base.html', form=form, ni=ni)
@@ -81,7 +88,8 @@ def settings():
 @bp.route('/profile/')
 def profile():
     user = User.query.get_or_404(g.user.id)
-    return render_template('auth/profile.html', user=user)
+    filename ="images/upload/" + user.image_path.replace(current_app.config['UPLOAD_DIR'], '')
+    return render_template('auth/profile.html', user=user, filename=filename)
 
 @bp.before_app_request #before_app_request : 라우트함수보타 먼저 실행
 def load_logged_in_user():

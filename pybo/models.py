@@ -45,6 +45,7 @@ class User(db.Model):
     password = db.Column(db.String(200), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     intro = db.Column(db.Text(), nullable=True)
+    image_path = db.Column(db.String(300), nullable=True)
     create_date = db.Column(db.DateTime(), nullable=False)
     modify_date = db.Column(db.DateTime(), nullable=True)
 

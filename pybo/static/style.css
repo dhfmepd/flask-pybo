@@ -2,9 +2,7 @@
     border-top:dotted 1px #ddd;
     font-size:0.7em;
 }
-/* ------------------------------------------------------ */
-/* Profile */
-#profile_base {
+.profile_base {
     padding:20px;
     border-left: solid 1px #dfe2e6;
     border-right: solid 1px #dfe2e6;

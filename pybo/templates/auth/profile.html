@@ -14,6 +14,7 @@
         <p class="mb-4">{{ user.username }}</p>
         <div class="profile_title">한줄소개</div>
         <p class="mb-4">{{ user.intro }}</p>
-    </div>
+        <img src="{{ url_for('static', filename=filename) }}">
+    </div></div>
 </div>
 {% endblock %}
