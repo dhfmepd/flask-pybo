@@ -7,7 +7,7 @@ from werkzeug.utils import redirect, secure_filename
 
 import functools
 from pybo import db
-from pybo.forms import UserCreateForm, UserLoginForm, UserSettingsBaseForm, UserSettingsImageForm, UserProfileForm
+from pybo.forms import UserCreateForm, UserLoginForm, UserSettingsBaseForm
 from pybo.models import User, Question
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
