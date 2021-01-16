@@ -1,28 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container my-3">
-    {% include 'auth/navtab.html' %}
-    <form method="post" class="post-form">
-        {{ form.csrf_token }}
-        {% include "form_errors.html" %}
-        <div class="form-group mt-2">
-            <label for="username">사용자명(ID)</label>
-            <input type="text" class="form-control" name="username" id="username"
-                   value="{{ form.username.data or '' }}">
-        </div>
-        <div class="form-group">
-            <label for="email">이메일</label>
-            <input type="text" class="form-control" name="email" id="email" readonly
-                   value="{{ form.email.data or '' }}">
-        </div>
-        <div class="form-group">
-            <label for="email">한줄소개</label>
-            <input type="text" class="form-control" name="intro" id="intro"
-                   value="{{ form.intro.data or '' }}">
-            <small id="introHelp" class="form-text text-muted">한줄로 자신에 대하여 얘기해 주세요.</small>
-        </div>
+    {% include 'auth/settings_navtab.html' %}
+    <div class="profile_base">
+        <form method="post" class="post-form">
+            {{ form.csrf_token }}
+            {% include "form_errors.html" %}
+            <div class="form-group mt-2">
+                <label for="username">사용자명(ID)</label>
+                <input type="text" class="form-control" name="username" id="username"
+                       value="{{ form.username.data or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="email">이메일</label>
+                <input type="text" class="form-control" name="email" id="email" readonly
+                       value="{{ form.email.data or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="email">한줄소개</label>
+                <input type="text" class="form-control" name="intro" id="intro"
+                       value="{{ form.intro.data or '' }}">
+                <small id="introHelp" class="form-text text-muted">한줄로 자신에 대하여 얘기해 주세요.</small>
+            </div>
 
-        <button type="submit" class="btn btn-sm btn-primary">저장하기</button>
-    </form>
+            <button type="submit" class="btn btn-sm btn-primary">저장하기</button>
+        </form>
+    </div>
 </div>
 {% endblock %}

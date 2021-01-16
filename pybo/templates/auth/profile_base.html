@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container my-3">
+    {% include 'auth/profile_navtab.html' %}
+    <div class="profile_base">
+        <div class="profile_title">사용자명</div>
+        <p class="mb-4">{{ user.username }}</p>
+        <div class="profile_title">한줄소개</div>
+        <p class="mb-4">{{ user.intro }}</p>
+        {% if user.image_path != None %}
+        <img src="{{ url_for('static', filename=user.image_path) }}">
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

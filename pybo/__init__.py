@@ -55,7 +55,8 @@ def create_app():
     SimpleMDE(app)
     
     #파일업로드 경로
-    app.config['UPLOAD_DIR'] = "C:/projects/myproject/pybo/static/images/upload/"
-    app.config['ALLOWED_EXTENSIONS'] = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+    app.config['UPLOAD_SV_DIR'] = "C:/projects/myproject/pybo/static/images/upload/"
+    app.config['UPLOAD_DB_DIR'] = "/images/upload/"
+    app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg', 'gif'])
 
     return app

@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from PIL import Image
 from flask import current_app, Blueprint, url_for, render_template, flash, request, session, g
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import redirect, secure_filename
@@ -7,7 +8,7 @@ from werkzeug.utils import redirect, secure_filename
 import functools
 from pybo import db
 from pybo.forms import UserCreateForm, UserLoginForm, UserSettingsBaseForm, UserSettingsImageForm, UserProfileForm
-from pybo.models import User
+from pybo.models import User, Question
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -76,20 +77,32 @@ def settings():
             file = request.files['profile_image']
             if file and allowed_file(file.filename):
                 file_name = secure_filename(file.filename)
-                file_path = os.path.join(current_app.config['UPLOAD_DIR'], file_name)
-                file.save(file_path)
-                user.image_path = file_path
+                file_path = os.path.join(current_app.config['UPLOAD_SV_DIR'], file_name)
+                #이미지 리사이즈 처리
+                img = Image.open(file)
+                img_resize = img.resize((256, 256))
+                img_resize.save(file_path)
+                #파일경로 저장
+                user.image_path = os.path.join(current_app.config['UPLOAD_DB_DIR'], file_name)
                 db.session.commit()
                 return redirect(url_for('main.index'))
         return render_template('auth/settings_image.html', ni=ni)
 
-    return render_template('auth/settings_base.html', form=form, ni=ni)
+    return redirect(url_for('main.index'))
 
 @bp.route('/profile/')
 def profile():
+    ni = request.args.get('ni', type=str, default='base')
     user = User.query.get_or_404(g.user.id)
-    filename ="images/upload/" + user.image_path.replace(current_app.config['UPLOAD_DIR'], '')
-    return render_template('auth/profile.html', user=user, filename=filename)
+    if ni == 'question':
+        page = request.args.get('page', type=int, default=1)
+        question_list = Question.query \
+            .filter_by(user_id=g.user.id) \
+            .order_by(Question.create_date.desc())
+        question_list = question_list.paginate(page, per_page=5)
+        return render_template('auth/profile_question.html', question_list=question_list, user=user, ni=ni)
+
+    return render_template('auth/profile_base.html', user=user, ni=ni)
 
 @bp.before_app_request #before_app_request : 라우트함수보타 먼저 실행
 def load_logged_in_user():

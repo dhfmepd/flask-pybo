@@ -1,0 +1,8 @@
+<ul class="nav nav-tabs">
+    <li class="nav_item">
+        <a class="nav-link {% if ni=='base' %}active{% endif %}" href="{{ url_for('auth.profile', ni='base') }}">기본정보</a>
+    </li>
+    <li class="nav_item">
+        <a class="nav-link {% if ni=='question' %}active{% endif %}" href="{{ url_for('auth.profile', ni='question') }}">게시물</a>
+    </li>
+</ul>
