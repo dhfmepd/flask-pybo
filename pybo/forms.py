@@ -27,3 +27,9 @@ class UserSettingsBaseForm(FlaskForm):
     username = StringField('사용자이름', validators=[DataRequired(), Length(min=3, max=25)])
     email = EmailField('이메일', [DataRequired(), Email()])
     intro = TextAreaField('한줄소개')
+
+class ApireqForm(FlaskForm):
+    subject = StringField('제목', validators=[DataRequired('제목은 필수입력 항목입니다.')])
+    service_key = StringField('서비스키', validators=[DataRequired('서비스키는 필수입력 항목입니다.')])
+    target_url = StringField('URL', validators=[DataRequired('URL은 필수입력 항목입니다.')])
+    parameter = TextAreaField('파라미터', validators=[DataRequired('파라미터는 필수입력 항목입니다.')])

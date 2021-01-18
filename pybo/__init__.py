@@ -34,13 +34,14 @@ def create_app():
 
     from . import models
 
-    from .views import main_views, question_views, answer_views, auth_views, comment_views, vote_views
+    from .views import main_views, question_views, answer_views, auth_views, comment_views, vote_views, api_request_views
     app.register_blueprint(main_views.bp)
     app.register_blueprint(question_views.bp)
     app.register_blueprint(answer_views.bp)
     app.register_blueprint(auth_views.bp)
     app.register_blueprint(comment_views.bp)
     app.register_blueprint(vote_views.bp)
+    app.register_blueprint(api_request_views.bp)
 
     #필터
     from .filter import format_datetime

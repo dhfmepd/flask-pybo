@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="col-sm-12 col-md-9 col-lg-10 p-2">
+    <div class="container my-3">
+        {% for message in get_flashed_messages() %}
+        <div class="alert alert-danger" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+        <h2 class="border-bottom py-2">{{ apireq.subject }}</h2>
+        <div class="row my-3">
+            <div class="col-12"> <!-- 질문영역 -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="subject">제목</label>
+                            <input type="text" class="form-control" name="subject" id="subject" readonly
+                                value="{{ apireq.subject or '' }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="service_key">서비스키</label>
+                            <input type="text" class="form-control" name="service_key" id="service_key" readonly
+                                value="{{ apireq.service_key or '' }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="target_url">URL</label>
+                            <input type="text" class="form-control" name="target_url" id="target_url" readonly
+                                value="{{ apireq.target_url or '' }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="parameter">파라미터</label>
+                            <textarea class="form-control" name="parameter" id="parameter" readonly rows="5">{{ apireq.parameter or '' }}</textarea>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            {% if apireq.modify_date %}
+                            <div class="badge badge-light p-2 text-left mx-3">
+                                <div class="mb-2">modified at</div>
+                                <div>{{ apireq.modify_date|datetime }}</div>
+                            </div>
+                            {% endif %}
+                            <div class="badge badge-light p-2 text-left">
+                                <div class="mb-2">{{ apireq.user.username }}</div>
+                                <div>{{ apireq.create_date|datetime }}</div>
+                            </div>
+                        </div>
+                        <div class="my-3">
+                            <a href="#" class="call btn btn-sm btn-outline-secondary"
+                               data-uri="{{ url_for('api_request.call', apireq_id=apireq.id) }}">실행</a>
+                            {% if g.user == apireq.user %}
+                            <a href="{{ url_for('api_request.modify', apireq_id=apireq.id) }}"
+                               class="btn btn-sm btn-outline-secondary">수정</a>
+                            <a href="#" class="delete btn btn-sm btn-outline-secondary"
+                               data-uri="{{ url_for('api_request.delete', apireq_id=apireq.id) }}">삭제</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 답변시작 -->
+        <a name="apires_start"></a>
+        <div class="d-flex justify-content-between border-top my-3 py-2">
+            <h5>
+                <strong>{{ apireq.apires_set|length }}</strong>개의 처리이력이 있습니다.
+                <small class="ml-5">{{ apires_list.page }} / {{ apires_list.pages }} Page</small>
+            </h5>
+        </div>
+        {% for apires in apires_list.items %}
+        <a name="apires_{{ apires.id }}"></a>
+        <div class="row my-3">
+            <div class="col-12">  <!-- 답변영역 -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-text">{{ apires.result_data }}</div>
+                        <div class="d-flex justify-content-end">
+                            {% if apires.modify_date %}
+                            <div class="badge badge-light p-2 text-left mx-3">
+                                <div class="mb-2">modified at</div>
+                                <div>{{ apires.modify_date|datetime }}</div>
+                            </div>
+                            {% endif %}
+                            <div class="badge badge-light p-2 text-left">
+                                <div class="mb-2">{{ apires.user.username }}</div>
+                                <div>{{ apires.create_date|datetime }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <a href="{{ url_for('api_request._list') }}" class="btn btn-primary"><i class="bi bi-list-ul"></i> 목록으로</a>
+        <ul class="pagination pagination-sm justify-content-center">
+            <!-- 이전페이지 -->
+            {% if apires_list.has_prev %}
+            <li class="page-item">
+                <a class="page-link" data-page="{{ apires_list.prev_num }}" href="#">이전</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+            </li>
+            {% endif %}
+            {% for page_num in apires_list.iter_pages() %}
+                {% if page_num %}
+                    {% if page_num != apires_list.page %}
+                    <li class="page-item">
+                        <a class="page-link" data-page="{{ page_num }}" href="#">{{ page_num }}</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item active" aria-current="page">
+                        <a class="page-link" href="#">{{ page_num }}</a>
+                    </li>
+                    {% endif %}
+                {% else %}
+                    <li class="disabled">
+                        <a class="page-link" href="#">...</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            <!-- 다음페이지 -->
+            {% if apires_list.has_next %}
+            <li class="page-item">
+                <a class="page-link" data-page="{{ apires_list.next_num }}" href="#">다음</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+            </li>
+            {% endif %}
+        </ul>
+        <form id="searchForm" method="get" action="{{ url_for('api_request.detail', apireq_id=apireq.id) }}">
+            <input type="hidden" id="page" name="page" value="{{ page }}">
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script type='text/javascript'>
+$(document).ready(function(){
+    $(".call").on('click', function() {
+        if(confirm("실행 하시겠습니까?")) {
+            location.href = $(this).data('uri');
+        }
+    });
+    $(".delete").on('click', function() {
+        if(confirm("정말로 삭제하시겠습니까?")) {
+            location.href = $(this).data('uri');
+        }
+    });
+    $(".page-link").on('click', function() {
+        $("#page").val($(this).data("page"));
+        $("#searchForm").submit();
+    });
+});
+</script>
+{% endblock %}

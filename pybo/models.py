@@ -68,3 +68,29 @@ class Menu(db.Model):
     title = db.Column(db.String(50), nullable=False)
     remark = db.Column(db.Text(), nullable=False)
     sort_no = db.Column(db.Integer, nullable=False)
+
+class Apireq(db.Model):
+    #기본키
+    id = db.Column(db.Integer, primary_key=True)
+    subject = db.Column(db.String(200), nullable=False)
+    service_key = db.Column(db.String(100), nullable=False)
+    target_url = db.Column(db.String(200), nullable=False)
+    parameter = db.Column(db.String(200), nullable=False)
+    data_type = db.Column(db.String(10), nullable=False)
+    create_date = db.Column(db.DateTime(), nullable=False)
+    modify_date = db.Column(db.DateTime(), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    user = db.relationship('User', backref=db.backref('apireq_set'))
+
+class Apires(db.Model):
+    #기본키
+    id = db.Column(db.Integer, primary_key=True)
+    apireq_id = db.Column(db.Integer, db.ForeignKey('apireq.id', ondelete='CASCADE'))
+    apireq = db.relationship('Apireq', backref=db.backref('apires_set'))
+    parameter = db.Column(db.String(200), nullable=False)
+    data_type = db.Column(db.String(10), nullable=False)
+    result_data = db.Column(db.Text(), nullable=False)
+    create_date = db.Column(db.DateTime(), nullable=False)
+    modify_date = db.Column(db.DateTime(), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    user = db.relationship('User', backref=db.backref('apires_set'))

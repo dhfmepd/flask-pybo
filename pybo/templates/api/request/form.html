@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="col-sm-12 col-md-9 col-lg-10 p-2">
+    <div class="container">
+        <h5 class="my-3 border-bottom pb-2">API 호출</h5>
+        <form method="post" class="post-form my-3">
+            {{ form.csrf_token }}
+            {% for field, errors in form.errors.items() %}
+            <div class="alert alert-danger" role="alert">
+                <strong>{{ form[field].label }}</strong>: {{ ', '.join(errors) }}
+            </div>
+            {% endfor %}
+            <div class="form-group">
+                <label for="subject">제목</label>
+                <input type="text" class="form-control" name="subject" id="subject"
+                    value="{{ form.subject.data or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="service_key">서비스키</label>
+                <input type="text" class="form-control" name="service_key" id="service_key"
+                    value="{{ form.service_key.data or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="target_url">URL</label>
+                <input type="text" class="form-control" name="target_url" id="target_url"
+                    value="{{ form.target_url.data or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="parameter">파라미터</label>
+                <textarea class="form-control" name="parameter" id="parameter" rows="5">{{ form.parameter.data or '' }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">저장하기</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
