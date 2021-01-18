@@ -1,14 +1,17 @@
 from datetime import datetime
 from sqlalchemy import func
-from urllib.request import urlopen
 
-from flask import Blueprint, render_template, request, url_for, g
+from urllib.request import urlopen
+from urllib.parse import quote
+
+from bs4 import BeautifulSoup
+
+from flask import Blueprint, render_template, request, url_for, g, flash
 from werkzeug.utils import redirect
 
 from pybo import db
 from pybo.models import Apireq, Apires, User
 from pybo.forms import ApireqForm
-
 from pybo.views.auth_views import login_required
 
 bp = Blueprint('api_request', __name__, url_prefix='/api/request')
@@ -114,11 +117,17 @@ def call(apireq_id):
     apireq = Apireq.query.get_or_404(apireq_id)
 
     #Loop 처리로 변경 필요.
-    parameter = '?ServiceKey=' + apireq.service_key + apireq.parameter + '&dataType=' + apireq.data_type
+    parameter = '?ServiceKey=' + apireq.service_key + "&numOfRows=10&pageNo=1&sidoName=" + quote("서울") + "&searchCondition=HOUR"
     print("Target URL ===== ", apireq.target_url)
     print("Parameter ===== ", parameter)
     response_body = urlopen(apireq.target_url + parameter).read().decode("utf-8")
     print('Response ===== ', response_body)
+    soup = BeautifulSoup(response_body, 'html.parser')
+    items = soup.findAll('item')
+
+    for item in items:
+        print("CTIY NAME == ", item.find('cityname').string)
+        print("PM10 == ", item.find('pm10value').string)
 
     apires = Apires(parameter=apireq.parameter,
                     data_type=apireq.data_type,
