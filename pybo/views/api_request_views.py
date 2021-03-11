@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 from sqlalchemy import func
 
@@ -116,22 +117,25 @@ def call(apireq_id):
     # 조회
     apireq = Apireq.query.get_or_404(apireq_id)
 
-    #Loop 처리로 변경 필요.
-    parameter = '?ServiceKey=' + apireq.service_key + "&numOfRows=10&pageNo=1&sidoName=" + quote("서울") + "&searchCondition=HOUR"
-    print("Target URL ===== ", apireq.target_url)
-    print("Parameter ===== ", parameter)
-    response_body = urlopen(apireq.target_url + parameter).read().decode("utf-8")
-    print('Response ===== ', response_body)
-    soup = BeautifulSoup(response_body, 'html.parser')
-    items = soup.findAll('item')
+    target_url = apireq.target_url + "?ServiceKey=" + apireq.service_key
+    parameter = apireq.parameter
+    jsonObject = json.loads(parameter)
 
-    for item in items:
-        print("CTIY NAME == ", item.find('cityname').string)
-        print("PM10 == ", item.find('pm10value').string)
+    for key in jsonObject:
+        target_url = target_url + "&" + key + "=" + quote(jsonObject.get(key))
 
+    result_data = urlopen(target_url).read().decode('utf-8')
+
+    #soup = BeautifulSoup(result_data, 'html.parser')
+    #items = soup.findAll('item')
+    #for item in items:
+    #    print("CTIY NAME == ", item.find('cityname').string)
+    #    print("PM10 == ", item.find('pm10value').string)
+
+    #저장처리 부
     apires = Apires(parameter=apireq.parameter,
                     data_type=apireq.data_type,
-                    result_data=response_body,
+                    result_data=result_data,
                     create_date=datetime.now(),
                     user=g.user)
     apireq.apires_set.append(apires)
